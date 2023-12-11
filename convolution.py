@@ -57,30 +57,27 @@ def create_array_of_boxes(size, spacing, pos_0=(0, 0, 0), alpha=1):
     return boxes
 
 
-def create_set_of_pipes(start_array, end_array, rows, cols, pipe_radius, box_size=1):
-    """Create pipes to emulate convolution from a 3x3 segment of start_array to blocks in end_array."""
-    kernel_size = 3  # Assuming a kernel_size of 3 for simplicity
-    half_box_size = box_size / 2  # Half the size of the box to calculate face centers
+def create_set_of_pipes(start_array, end_array, start_rows, start_cols, kernel_size, pipe_radius, box_size=1):
+    half_box_size = box_size / 2  # Half the size of the box
 
-    for row in range(0, rows - 2, kernel_size):
-        for col in range(0, cols - 2, kernel_size):
-            start_idx = row * cols + col
-            end_idx = (row // kernel_size) * (cols // kernel_size) + (col // kernel_size)
+    # Iterate over each box in the end_array
+    for end_idx, end_box in enumerate(end_array):
+        # Calculate the corresponding top-left corner in the start_array for this end_box
+        start_row = end_idx // (start_cols - kernel_size + 1)
+        start_col = end_idx % (start_cols - kernel_size + 1)
 
-            if end_idx < len(end_array):
-                for i in range(kernel_size):
-                    for j in range(kernel_size):
-                        idx = start_idx + i * cols + j
-                        if idx < len(start_array):
-                            start_box = start_array[idx]
-                            end_box = end_array[end_idx]
+        # Create pipes from the 3x3 segment starting at (start_row, start_col)
+        for i in range(kernel_size):
+            for j in range(kernel_size):
+                idx = (start_row + i) * start_cols + (start_col + j)
+                if idx < len(start_array):
+                    start_box = start_array[idx]
 
-                            # Adjust start and end locations to the centers of the front and back faces of the boxes
-                            start_location = (start_box.location[0], start_box.location[1] + half_box_size, start_box.location[2])
-                            end_location = (end_box.location[0], end_box.location[1] - half_box_size, end_box.location[2])
+                    start_location = (start_box.location[0], start_box.location[1] + half_box_size, start_box.location[2])
+                    end_location = (end_box.location[0], end_box.location[1] - half_box_size, end_box.location[2])
 
-                            material = end_box.data.materials[0]
-                            create_pipe(start_location, end_location, pipe_radius, material)
+                    material = end_box.data.materials[0]
+                    create_pipe(start_location, end_location, pipe_radius, material)
 
 
 # Clear existing objects
@@ -96,4 +93,4 @@ pipe_radius = 0.02
 pipe_material = create_material("PipeMaterial", (0, 0, 1), 1)  # Blue color
 
 # Create sets of pipes to emulate convolution
-create_set_of_pipes(first_array, second_array, 5, 5, pipe_radius)
+create_set_of_pipes(first_array, second_array, 5, 5, 3, pipe_radius)
