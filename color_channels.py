@@ -26,4 +26,24 @@ create_box((0, 0.35, 0), single_material_green, scale)
 create_box((0, 0.7, 0), single_material_blue, scale)
 create_box((-0.15, 0.35, 0), combined_material, (0.8, 1.1, 1.1))
 
+# Create light
+light_xy = 3
+light_z = 5
+
+create_point_light("Light", (light_xy, light_xy, light_z), energy=500)
+create_point_light("Light", (light_xy, -light_xy, light_z), energy=500)
+create_point_light("Light", (-light_xy, -light_xy, light_z), energy=500)
+create_point_light("Light", (-light_xy, light_xy, light_z), energy=500)
+create_point_light("Light", (light_xy, light_xy, -light_z), energy=500)
+create_point_light("Light", (light_xy, -light_xy, -light_z), energy=500)
+create_point_light("Light", (-light_xy, -light_xy, -light_z), energy=500)
+create_point_light("Light", (-light_xy, light_xy, -light_z), energy=500)
+
+rotation = (60, 0, 130)
+location = (4, 4, 3)
+locationInverse = (-4, -4, -3)
+create_camera("Camera", location, rotation)
+
+material_white = create_material("WhiteMaterial", (1, 1, 1), 1)
+create_plane(locationInverse, material_white, (15, 15), rotation)
 

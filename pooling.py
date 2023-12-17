@@ -37,8 +37,8 @@ bpy.ops.object.select_all(action='SELECT')
 bpy.ops.object.delete()
 
 # Create arrays of boxes
-first_array = create_array_of_cubes((4, 4), 0.05) # 5x5 array
-second_array = create_array_of_cubes((2, 2), 0.05, pos_0=(1.05, 4, 1.05)) # 3x3 array
+first_array = create_array_of_cubes((4, 4), 0.05)
+second_array = create_array_of_cubes((2, 2), 0.05, pos_0=(1.05, 4, 1.05))
 
 # Create sets of pipes to emulate convolution
 create_set_of_pipes(first_array, second_array, 4, 2)
@@ -47,3 +47,25 @@ create_set_of_pipes(first_array, second_array, 4, 2)
 kernel_material = create_material("KernelMaterial", (0.6, 0, 0), 0.8)
 create_box((2.625, 0, 2.625), kernel_material, (2.15, 1.1, 2.15))
 create_box((2.1, 4, 2.1), kernel_material, (1.1, 1.1, 1.1))
+
+# Create light
+light_xy = 4
+light_z = 6
+
+create_point_light("Light", (light_xy, light_xy, light_z), energy=500)
+create_point_light("Light", (light_xy, -light_xy, light_z), energy=500)
+create_point_light("Light", (-light_xy, -light_xy, light_z), energy=500)
+create_point_light("Light", (-light_xy, light_xy, light_z), energy=500)
+create_point_light("Light", (light_xy, light_xy, -light_z), energy=500)
+create_point_light("Light", (light_xy, -light_xy, -light_z), energy=500)
+create_point_light("Light", (-light_xy, -light_xy, -light_z), energy=500)
+create_point_light("Light", (-light_xy, light_xy, -light_z), energy=500)
+
+rotation = (60, 0, 130)
+location = (12, 12, 10)
+locationInverse = (-12, -12, -9)
+create_camera("Camera", location, rotation)
+
+material_white = create_material("WhiteMaterial", (1, 1, 1), 1)
+create_plane(locationInverse, material_white, (35, 35), rotation)
+

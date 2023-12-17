@@ -36,13 +36,13 @@ bpy.ops.object.select_all(action='SELECT')
 bpy.ops.object.delete()
 
 # Create arrays of boxes
-first_array = create_array_of_cubes((5, 5), 0.05) # 5x5 array
-second_array = create_array_of_cubes((3, 3), 0.05, pos_0=(1.05, 4, 1.05)) # 3x3 array
+first_array = create_array_of_cubes((4, 4), 0.05)
+second_array = create_array_of_cubes((2, 2), 0.05, pos_0=(1.05, 4, 1.05))
 
 # Create sets of pipes to emulate convolution
-create_set_of_pipes(first_array, second_array, 5, 3)
+create_set_of_pipes(first_array, second_array, 4, 3)
 
 # Create kernel
 kernel_material = create_material("KernelMaterial", (0.6, 0, 0), 0.8)
-create_box((3.15, 0, 3.15), kernel_material, (3.15, 1.1, 3.15))
-create_box((3.15, 4, 3.15), kernel_material, (1.1, 1.1, 1.1))
+create_box((2.1, 0, 2.1), kernel_material, (3.2, 1.1, 3.2))
+create_box((2.1, 4, 2.1), kernel_material, (1.1, 1.1, 1.1))
