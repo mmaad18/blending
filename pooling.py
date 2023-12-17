@@ -44,28 +44,23 @@ second_array = create_array_of_cubes((2, 2), 0.05, pos_0=(1.05, 4, 1.05))
 create_set_of_pipes(first_array, second_array, 4, 2)
 
 # Create kernel
-kernel_material = create_material("KernelMaterial", (0.6, 0, 0), 0.8)
+kernel_material = create_material("KernelMaterial", (0.6, 0, 0), 0.7)
 create_box((2.625, 0, 2.625), kernel_material, (2.15, 1.1, 2.15))
 create_box((2.1, 4, 2.1), kernel_material, (1.1, 1.1, 1.1))
 
 # Create light
-light_xy = 4
-light_z = 6
+create_box_of_point_lights(3.5, 5.5, 7, 400)
+create_point_light((2, 1, 4.5), energy=300)
 
-create_point_light("Light", (light_xy, light_xy, light_z), energy=500)
-create_point_light("Light", (light_xy, -light_xy, light_z), energy=500)
-create_point_light("Light", (-light_xy, -light_xy, light_z), energy=500)
-create_point_light("Light", (-light_xy, light_xy, light_z), energy=500)
-create_point_light("Light", (light_xy, light_xy, -light_z), energy=500)
-create_point_light("Light", (light_xy, -light_xy, -light_z), energy=500)
-create_point_light("Light", (-light_xy, -light_xy, -light_z), energy=500)
-create_point_light("Light", (-light_xy, light_xy, -light_z), energy=500)
-
+# Create camera
 rotation = (60, 0, 130)
 location = (12, 12, 10)
-locationInverse = (-12, -12, -9)
-create_camera("Camera", location, rotation)
+create_camera(location, rotation)
 
-material_white = create_material("WhiteMaterial", (1, 1, 1), 1)
-create_plane(locationInverse, material_white, (35, 35), rotation)
+locationInverse = (-24, -24, -20)
+material_white = create_material("WhiteMaterial", (1, 1, 1), 1, 2)
+create_plane(locationInverse, material_white, (60, 60), rotation)
+
+#create_spot_light((-7.5, -7.5, -7.5), rotation, spot_size=120, energy=7500)
+
 

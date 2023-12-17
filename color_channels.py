@@ -24,26 +24,18 @@ scale = (1, 0.3, 1)
 create_box((0, 0, 0), single_material_red, scale)
 create_box((0, 0.35, 0), single_material_green, scale)
 create_box((0, 0.7, 0), single_material_blue, scale)
-create_box((-0.15, 0.35, 0), combined_material, (0.8, 1.1, 1.1))
+create_box((-0.05, 0.35, 0), combined_material, (1, 1.1, 1.1))
 
 # Create light
-light_xy = 3
-light_z = 5
+energy = 400
+create_box_of_point_lights(3, 5, 6, energy)
 
-create_point_light("Light", (light_xy, light_xy, light_z), energy=500)
-create_point_light("Light", (light_xy, -light_xy, light_z), energy=500)
-create_point_light("Light", (-light_xy, -light_xy, light_z), energy=500)
-create_point_light("Light", (-light_xy, light_xy, light_z), energy=500)
-create_point_light("Light", (light_xy, light_xy, -light_z), energy=500)
-create_point_light("Light", (light_xy, -light_xy, -light_z), energy=500)
-create_point_light("Light", (-light_xy, -light_xy, -light_z), energy=500)
-create_point_light("Light", (-light_xy, light_xy, -light_z), energy=500)
-
+# Create camera
 rotation = (60, 0, 130)
 location = (4, 4, 3)
-locationInverse = (-4, -4, -3)
-create_camera("Camera", location, rotation)
+create_camera(location, rotation)
 
+locationInverse = (-8, -8, -6)
 material_white = create_material("WhiteMaterial", (1, 1, 1), 1)
-create_plane(locationInverse, material_white, (15, 15), rotation)
+create_plane(locationInverse, material_white, (20, 20), rotation)
 
