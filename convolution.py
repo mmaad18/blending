@@ -1,6 +1,4 @@
 import bpy
-import random
-import math
 
 import sys
 sys.path.append('C:\\Users\\mmbio\\Documents\\GitHub\\blending')
