@@ -24,7 +24,7 @@ Available: https://github.com/mmaad18/blending
 1. Clone the repository or download the source code.
 
 
-    git clone https://github.com/your-github-username/blending.git
+    git clone https://github.com/mmaad18/blending.git
 
 
 2. Install Blender (Version 4.0.x or later recommended).
