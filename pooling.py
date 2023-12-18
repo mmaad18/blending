@@ -29,6 +29,7 @@ def create_set_of_pipes(start_array, end_array, start_cols, kernel_size, pipe_ra
                     end_location = (end_box.location[0], end_box.location[1] - half_box_size, end_box.location[2])
 
                     material = end_box.data.materials[0]  # Use the material of the end_box
+                    set_material_alpha(material, 1.0)
                     create_pipe(start_location, end_location, pipe_radius, material)
 
 
@@ -37,30 +38,29 @@ bpy.ops.object.select_all(action='SELECT')
 bpy.ops.object.delete()
 
 # Create arrays of boxes
-first_array = create_array_of_cubes((4, 4), 0.05)
-second_array = create_array_of_cubes((2, 2), 0.05, pos_0=(1.05, 4, 1.05))
+first_array = create_array_of_rbg_cubes((4, 4), 0.15, alpha=0.6)
+second_array = create_array_of_rbg_cubes((2, 2), 0.15, pos_0=(1.15, 4, 1.15), alpha=0.6)
 
 # Create sets of pipes to emulate convolution
 create_set_of_pipes(first_array, second_array, 4, 2)
 
 # Create kernel
 kernel_material = create_material("KernelMaterial", (0.6, 0, 0), 0.7)
-create_box((2.625, 0, 2.625), kernel_material, (2.15, 1.1, 2.15))
-create_box((2.1, 4, 2.1), kernel_material, (1.1, 1.1, 1.1))
+create_box((2.875, 0.35, 2.875), kernel_material, (2.35, 1.2, 2.35))
+create_box((2.3, 4.35, 2.3), kernel_material, (1.2, 1.2, 1.2))
 
 # Create light
-create_box_of_point_lights(3.5, 5.5, 7, 400)
-create_point_light((2, 1, 4.5), energy=300)
+material_emitting = create_material("EmittingMaterial", (1, 1, 1), emission_strength=0.25)
+create_sphere((0, 0, 0), 50, material_emitting)
 
 # Create camera
 rotation = (60, 0, 130)
-location = (12, 12, 10)
-create_camera(location, rotation)
+location = (12, 10.5, 10)
+create_camera(location, rotation, ortho=True, scale=7, resolution=(750, 750))
 
-locationInverse = (-24, -24, -20)
-material_white = create_material("WhiteMaterial", (1, 1, 1), 1, 2)
-create_plane(locationInverse, material_white, (60, 60), rotation)
+locationInverse = (-20, -20, -16)
+material_white = create_material("WhiteMaterial", (0.5, 0.5, 0.5))
+create_plane(locationInverse, material_white, (50, 50), rotation)
 
-#create_spot_light((-7.5, -7.5, -7.5), rotation, spot_size=120, energy=7500)
 
 

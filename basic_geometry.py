@@ -3,7 +3,7 @@ import random
 import math
 
 
-def create_material(name, color, alpha=1, emission_strength=0):
+def create_material(name, color, alpha=1.0, emission_strength=0.0):
     material = bpy.data.materials.new(name)
     material.diffuse_color = (*color, alpha)  # RGBA
     material.use_nodes = True
@@ -16,26 +16,42 @@ def create_material(name, color, alpha=1, emission_strength=0):
     return material
 
 
-def create_plane(location, material, scale=(1, 1), rotation=(0, 0, 0)):
-    # Create a new plane
+def set_material_alpha(material, alpha):
+    if material and material.use_nodes:
+        # Assuming the use of a Principled BSDF shader
+        for node in material.node_tree.nodes:
+            if node.type == 'BSDF_PRINCIPLED':
+                # Set the alpha value
+                node.inputs['Alpha'].default_value = alpha
+
+    return material
+
+
+def create_plane(location, material, scale=(1.0, 1.0), rotation=(0.0, 0.0, 0.0)):
     bpy.ops.mesh.primitive_plane_add(size=1, enter_editmode=False, align='WORLD', location=location)
     plane = bpy.context.active_object
-
-    # Apply scaling
     plane.scale = (scale[0], scale[1], 1)
-
-    # Apply rotation (Blender uses radians, not degrees)
     plane.rotation_euler = (math.radians(rotation[0]), math.radians(rotation[1]), math.radians(rotation[2]))
-
     plane.data.materials.append(material)
 
+    return plane
 
-def create_box(location, material, scale=(1, 1, 1)):
+
+def create_box(location, material, scale=(1.0, 1.0, 1.0)):
     bpy.ops.mesh.primitive_cube_add(size=1, enter_editmode=False, align='WORLD', location=location)
     box = bpy.context.active_object
     box.scale = scale
     box.data.materials.append(material)
+
     return box
+
+
+def create_sphere(location, radius, material):
+    bpy.ops.mesh.primitive_uv_sphere_add(radius=radius, enter_editmode=False, align='WORLD', location=location)
+    sphere = bpy.context.active_object
+    sphere.data.materials.append(material)
+
+    return sphere
 
 
 def create_pipe(start_location, end_location, radius, material):
@@ -58,15 +74,9 @@ def create_pipe(start_location, end_location, radius, material):
     pipe.data.materials.append(material)
 
 
-def create_sphere(location, radius, material):
-    bpy.ops.mesh.primitive_uv_sphere_add(radius=radius, enter_editmode=False, align='WORLD', location=location)
-    sphere = bpy.context.active_object
-    sphere.data.materials.append(material)
-    return sphere
-
-
-def create_array_of_cubes(dimension, spacing, pos_0=(0, 0, 0), alpha=1):
+def create_array_of_cubes(dimension, spacing, pos_0=(0.0, 0.0, 0.0), alpha=1.0):
     boxes = []
+
     for i in range(dimension[0]):
         for j in range(dimension[1]):
             color = (random.random(), random.random(), random.random())
@@ -76,15 +86,57 @@ def create_array_of_cubes(dimension, spacing, pos_0=(0, 0, 0), alpha=1):
             z_pos = j * (1 + spacing) + pos_0[2]
             box = create_box((x_pos, y_pos, z_pos), material)
             boxes.append(box)
+
     return boxes
 
 
-def create_camera(location, rotation, resolution=(1000, 1000), samples=1000, name="Camera"):
-    # Create a new camera data block
-    cam_data = bpy.data.cameras.new(name)
+def create_rbg_cube(location, color=(1.0, 1.0, 1.0), alpha=0.75, sliced=False):
+    R = color[0]
+    G = color[1]
+    B = color[2]
 
-    # Create a new object with the camera data
+    single_material_red = create_material("SingleMaterialRed", (R, 0, 0))
+    single_material_green = create_material("SingleMaterialGreen", (0, G, 0))
+    single_material_blue = create_material("SingleMaterialBlue", (0, 0, B))
+    combined_material = create_material("CombinedMaterial", (R, G, B), alpha)
+    scale = (1, 0.3, 1)
+
+    create_box(location, single_material_red, scale)
+    create_box((location[0], 0.35 + location[1], location[2]), single_material_green, scale)
+    create_box((location[0], 0.7 + location[1], location[2]), single_material_blue, scale)
+
+    if sliced:
+        return create_box((-0.05 + location[0], 0.35 + location[1], location[2]), combined_material, (1, 1.1, 1.1))
+    else:
+        return create_box((location[0], 0.35 + location[1], location[2]), combined_material, (1.1, 1.1, 1.1))
+
+
+def create_array_of_rbg_cubes(dimension, spacing, pos_0=(0.0, 0.0, 0.0), alpha=0.75, sliced=False):
+    cubes = []
+
+    for i in range(dimension[0]):
+        for j in range(dimension[1]):
+            color = (random.random(), random.random(), random.random())
+            x_pos = i * (1 + spacing) + pos_0[0]
+            y_pos = pos_0[1]
+            z_pos = j * (1 + spacing) + pos_0[2]
+            cube = create_rbg_cube((x_pos, y_pos, z_pos), color, alpha, sliced)
+            cubes.append(cube)
+
+    return cubes
+
+
+def create_camera(location, rotation, resolution=(1000, 1000), samples=1000, ortho=False, scale=5.0, lens=50.0, name="Camera"):
+    cam_data = bpy.data.cameras.new(name)
     cam_object = bpy.data.objects.new(name, cam_data)
+
+    # Set camera type
+    if ortho:
+        cam_object.data.type = 'ORTHO'
+        cam_object.data.ortho_scale = scale
+    else:
+        cam_object.data.type = 'PERSP'
+        cam_object.data.lens = lens
 
     # Set camera location and rotation
     cam_object.location = location
@@ -93,7 +145,7 @@ def create_camera(location, rotation, resolution=(1000, 1000), samples=1000, nam
     # Link the camera object to the scene
     bpy.context.collection.objects.link(cam_object)
 
-    # Set the active camera (optional, if you want this to be the active scene camera)
+    # Set to active camera
     bpy.context.scene.camera = cam_object
 
     # Set render settings
@@ -103,11 +155,8 @@ def create_camera(location, rotation, resolution=(1000, 1000), samples=1000, nam
     bpy.context.scene.cycles.samples = samples
 
 
-def create_point_light(location, color=(1, 1, 1), energy=100, name="PointLight"):
-    # Create a new light data block
+def create_point_light(location, color=(1.0, 1.0, 1.0), energy=100, name="PointLight"):
     light_data = bpy.data.lights.new(name=name, type='POINT')
-
-    # Set light color and energy
     light_data.color = color
     light_data.energy = energy
 
@@ -115,8 +164,7 @@ def create_point_light(location, color=(1, 1, 1), energy=100, name="PointLight")
     light_object = bpy.data.objects.new(name=name, object_data=light_data)
 
     # Set light object location
-    location = (location[0] + 1, location[1] + 1, location[2])
-    light_object.location = location
+    light_object.location = (location[0] + 1, location[1] + 1, location[2])
 
     # Link the light object to the scene
     bpy.context.collection.objects.link(light_object)
@@ -124,11 +172,8 @@ def create_point_light(location, color=(1, 1, 1), energy=100, name="PointLight")
     return light_object
 
 
-def create_spot_light(location, rotation, color=(1, 1, 1), energy=100, spot_size=100, blend=0, name="SpotLight"):
-    # Create a new light data block
+def create_spot_light(location, rotation, color=(1.0, 1.0, 1.0), energy=100, spot_size=100, blend=0, name="SpotLight"):
     light_data = bpy.data.lights.new(name=name, type='SPOT')
-
-    # Set light color and energy
     light_data.color = color
     light_data.energy = energy
     light_data.spot_size = math.radians(spot_size)
