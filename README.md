@@ -20,10 +20,6 @@ Available: https://github.com/mmaad18/blending
 - Customizable materials, camera setup, and lighting configuration.
 - Modular Python scripts for easy modification and extension.
 
-## Prerequisites
-- Blender (Version 2.8x or later recommended).
-- Basic knowledge of Blender's interface and Python scripting.
-
 ## Installation
 1. Clone the repository or download the source code.
 
@@ -31,8 +27,9 @@ Available: https://github.com/mmaad18/blending
     git clone https://github.com/your-github-username/blending.git
 
 
-2. Open Blender and navigate to `Scripting`.
-3. Load the Python scripts from the `blending` directory.
+2. Install Blender (Version 4.0.x or later recommended).
+3. Open Blender and navigate to `Scripting`.
+4. Load the Python scripts from the `blending` directory.
 
 ## Usage
 The project consists of several Python scripts that can be executed within Blender's Scripting environment. The primary scripts are:
@@ -42,7 +39,7 @@ The project consists of several Python scripts that can be executed within Blend
 - `pooling.py`: Sets up a scene to visualize the pooling operation.
 - `color_channels.py`: Demonstrates the creation of RGB cubes and other basic elements.
 
-To run a script:
+**To run a script:**
 1. Open the script in Blender's Text Editor.
 2. Press `Run Script` to execute and visualize the scene.
 
