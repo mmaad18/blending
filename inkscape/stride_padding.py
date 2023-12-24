@@ -1,6 +1,5 @@
 
 
-
 def draw_number(x, y, size, number=0):
     text(str(number), (x + size/2.25, y + size/1.25), font_size='24pt', font_family='serif')
 
