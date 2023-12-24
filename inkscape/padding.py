@@ -13,9 +13,19 @@ def draw_kernel(x, y, size, multiplier=3, stroke_width=3, stroke='red'):
     rect((x, y), (x + multiplier*size, y + multiplier*size), fill='none', stroke=stroke, stroke_width=stroke_width, stroke_linecap='round')
 
 
+def draw_right_arrow(x, y, base_length, base_height, head_length, head_height, color='black'):
+    bl = base_length
+    bh2 = base_height / 2
+    hh2 = head_height / 2
+    tl = base_length + head_length
+    polygon([(x, y), (x, y + bh2), (x + bl, y + bh2), (x + bl, y + hh2),
+             (x + tl, y), (x + bl, y - hh2), (x + bl, y - bh2), (x, y - bh2)],
+            fill=color, stroke=color, stroke_width=2)
+
+
 # Define some program parameters.
-canvas.width = 500
-canvas.height = 500
+canvas.width = 550
+canvas.height = 550
 x = 0
 y = 0
 size = 50
@@ -37,11 +47,13 @@ for i in range(num_squares):
             draw_box(x, y, size, spacing=spacing, stroke_width=1, stroke='#bbbbbb')
         else:
             draw_number(x, y, size, randint(min_num, max_num))
-            #rect((x + spacing, y + spacing), (x + size, y + size), fill='none', stroke='black', stroke_width=1)
             draw_box(x, y, size, spacing=spacing, stroke_width=2, stroke='black')
 
 
-draw_kernel(spacing/2, spacing/2, size)
+draw_kernel(spacing/2, spacing/2, size, stroke_width=4, stroke='red')
+draw_kernel(spacing/2 + size, spacing/2, size, stroke_width=3, stroke='blue')
+draw_kernel(spacing/2 + 2*size, spacing/2, size, stroke_width=2, stroke='green')
 
-draw_kernel(spacing/2 + size, spacing/2, size, multiplier=3, stroke_width=2, stroke='blue')
 
+draw_right_arrow(spacing/2, size/2 + spacing, size*0.7, size*0.15, size*0.25, size*0.35, color='blue')
+draw_right_arrow(spacing/2, size*1.5 + spacing, size*1.7, size*0.15, size*0.25, size*0.35, color='green')
